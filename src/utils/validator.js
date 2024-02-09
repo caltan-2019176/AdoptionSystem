@@ -39,3 +39,18 @@ export const checkUpdate = (data, userId) => {
         return false
     }
 }
+
+export const checkUpdateAnimal = (data, userId) => {
+    if (userId) {
+        if (Object.entries(data).length === 0 ||
+            data.typeAnimal ||
+            data.typeAnimal == '' ||
+            data.genre ||
+            data.genre == '') {
+            return false
+        }
+        return true
+    } else {
+        return false
+    }
+}

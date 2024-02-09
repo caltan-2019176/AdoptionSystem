@@ -1,6 +1,7 @@
 'use strict'
 import { response } from 'express'
 import Animal from './animal.model.js'
+import { checkUpdateAnimal} from '../utils/validator.js'
 
 
 export const testA = (req, res)=>{
@@ -26,7 +27,7 @@ export const obtenerAnimal = async (req, res = response) => {
 
     try {
         const totalAnimales = await Animal.find();
-        res.json({ total: totalAnimales });
+        return res.json({ total: totalAnimales });
 
     } catch (error) {
         console.error(error)
@@ -37,8 +38,8 @@ export const obtenerAnimal = async (req, res = response) => {
 
 export const buscarAnimal = async(req, res) =>{
     try {
-        let {id} = req.params
-        let animal = await Animal.findOne({_id : id});
+        let {param} = req.params
+        let animal = await Animal.findOne({_id : param});
         return res.json({ message: 'Animal find', animal })
 
 
@@ -63,4 +64,25 @@ export const deleteAnimal = async (req, res) =>{
     }
 
 
+}
+
+export const updateAnimal = async(req, res)=>{
+    try {
+        let {id} = req.params
+        let data = req.body
+        let update =  checkUpdateAnimal(data, id)
+        if(!update) return res.status(400).send({message: 'Have submitted some data that cannot be update'})
+        let updateAnimal = await Animal.findOneAndUpdate(
+            { _id: id },
+            data,
+            {new: true} 
+        )
+        if (!updateAnimal) return res.status(401).send({ message: 'Animal not found' })
+        return res.send({ message: 'Animal  update', updateAnimal })
+    } catch (error) {
+        console.error(error)
+        if(error.keyValue.nameAnimal ) return res.status(400).send({message: `Name ${error.keyValue.nameAnimal} is alredy taken ` })
+        return res.status(500).send({ message: 'Error updating' })
+    }
+    
 }
