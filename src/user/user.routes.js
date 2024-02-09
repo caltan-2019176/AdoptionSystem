@@ -1,6 +1,7 @@
 import express from 'express'
 import { test, register, login, updatePassword, deleteUser, update } from './user.controller.js';
 
+
 const api = express.Router();
 
 api.get('/test', test)

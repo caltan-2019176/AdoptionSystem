@@ -24,6 +24,10 @@ const animalSchema = mongoose.Schema({
         minLength: 1,
     },
     keeper:{
-        type: Schema.ObjectId, ref: "user"
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User",
+        required: true
     }
 })
+
+export default mongoose.model('animal', animalSchema)
